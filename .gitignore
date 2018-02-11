@@ -1,0 +1,13 @@
+.DS_Store
+_minted-slides_cds2018/
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+slides_cds2018.pdf
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
