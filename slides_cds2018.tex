@@ -59,7 +59,6 @@
 \title{{\large Anomaly detection in scikit-learn} \\ {\normalfont \small{Ongoing work and future developments}}}
 \author{Albert Thomas}
 \institute{T\'el\'ecom ParisTech - Huawei Technologies}
-\date{}
 
 
 \begin{document}
@@ -133,22 +132,138 @@ $q$ usually depends on a \mintinline{python}{contamination} parameter
 
 
 \begin{frame}\frametitle{Scikit-learn API}
+    
+\begin{center}
+PR on \textbf{API consistency} $\vcenter{\hbox{\includegraphics[width=1.7cm]{img/merged_logo.pdf}}}$ last week
+\end{center}
 
-PR on \textbf{outlier detection API consistency} $\vcenter{\hbox{\includegraphics[width=1.7cm]{img/merged_logo.pdf}}}$ last week
+\begin{itemize}
+  \item \mintinline{python}{decision_function}
+  \item new \mintinline{python}{score_samples} method
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Scikit-learn API - Novelty detection}
+
+\mintinline{python}{EllipticEnvelope}, \mintinline{python}{OneClassSVM} and \mintinline{python}{IsolationForest}
 
 \begin{itemize}
   \item instantiate your estimator, e.g.~\mintinline{python}{clf = OneClassSVM()}
-  \item \mintinline{python}{clf.fit(X)}
-  \item raw score $s$ given by \mintinline{python}{clf.score_samples(X)}
-  \item thresholded score \mintinline{python}{clf.decision_function(X)}
+  \item \mintinline{python}{clf.fit(X_train)}
+  \item \mintinline{python}{clf.score_samples(X_test)}: raw score $s$
+  \item \mintinline{python}{clf.decision_function(X_test)}: thresholded score
   \begin{equation*}
   \begin{cases}
-    \text{\mintinline{python}{clf.decision_function(X)}} \geq 0 \quad \text{for inliers} \\
-     \text{\mintinline{python}{clf.decision_function(X)}} < 0 \quad \text{for outliers}
+    \geq 0 \quad \text{for inliers} \\
+    < 0 \quad \text{for outliers}
   \end{cases}
   \end{equation*}
-  \item \mintinline{python}{clf.predict(X)}
+  \item \mintinline{python}{clf.predict(X_test)}
+  \begin{equation*}
+  \begin{cases}
+    +1 \quad \text{for inliers} \\
+    -1 \quad \text{for outliers}
+  \end{cases}
+  \end{equation*}
 \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Scikit-learn API - Outlier detection}
+
+\mintinline{python}{LocalOutlierFactor}, based on \mintinline{python}{k}-NN distances
+
+\begin{itemize}
+  \item \mintinline{python}{predict} on \mintinline{python}{x} $\in$ \mintinline{python}{X_train}: take \mintinline{python}{k} nearest neighbors of \mintinline{python}{x} in $\mintinline{python}{X_train} \setminus \mintinline{python}{x}$
+  \item \mintinline{python}{predict} on \mintinline{python}{x} $\notin$ \mintinline{python}{X_train}: take \mintinline{python}{k} nearest neighbors of \mintinline{python}{x} in \mintinline{python}{X_train}
+\end{itemize}
+\begin{center}
+Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or not...
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Scikit-learn API - Outlier detection}
+
+\onslide<1->{
+1st solution
+\begin{itemize}
+  \item \mintinline{python}{fit_predict(X_train)} to predict on \mintinline{python}{X_train}
+  \item \mintinline{python}{predict(X_test)} to predict on \mintinline{python}{X_test}
+\end{itemize}
+}
+
+\visible<2>{
+\begin{center}
+\alert{\mintinline{python}{fit(X).predict(X) != fit_predict(X)}}
+\end{center}
+}
+
+
+
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Scikit-learn API - Outlier detection}
+
+\onslide<1->{
+2nd solution
+\begin{itemize}
+  \item only \mintinline{python}{fit_predict(X)} is public
+  \item \mintinline{python}{_score_samples}, \mintinline{python}{_decision_function} and \mintinline{python}{_predict} are private
+\end{itemize}
+% LOF's original paper is only about outlier detection
+}
+
+\visible<2->{
+\begin{center}
+\textbf{Cannot (officialy) use \mintinline{python}{LocalOutlierFactor} for novelty detection}
+\end{center}
+\begin{center}
+\includegraphics[width=2cm]{img/shocking.jpg}
+\end{center}
+}
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Scikit-learn API}
+
+\onslide<1->{
+\mintinline{python}{contamination} parameter in $(0, 1)$ (\mintinline{python}{nu} for \mintinline{python}{OneClassSVM})
+
+\begin{itemize}
+  \item for outlier detection: proportion of outliers in the data set
+  \item for novelty detection: type-I error (false positive rate)
+\end{itemize}
+}
+
+\visible<2->{
+Used to compute the offset $q$ on the training set
+\begin{equation*}
+\{s(x) < q \} = \{\text{\mintinline{python}{clf.score_samples(x) < clf.offset_}}\}
+\end{equation*}
+}
+\visible<3->{
+\mintinline{python}{contamination} can be set to \mintinline{python}{'auto'} for iForest and LOF
+\begin{itemize}
+  \item iForest: score of inliers close to 0 and score of outliers close to -1
+  \begin{equation*}
+  \mintinline{python}{clf.offset_ = -0.5}
+  \end{equation*}
+  
+  \item LOF: score of inliers $\approx -1$
+  \begin{equation*}
+  \mintinline{python}{clf.offset_ = -1.5}
+  \end{equation*}
+\end{itemize}
+}
+
 \end{frame}
 
 
