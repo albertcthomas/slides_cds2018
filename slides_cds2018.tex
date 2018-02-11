@@ -119,6 +119,11 @@ the smaller $s(x)$ the more abnormal is $x$
 $q$ usually depends on a \mintinline{python}{contamination} parameter
 \end{enumerate}
 
+\begin{center}
+EllipticEnvelope, OneClassSVM \\
+IsolationForest (iForest) and LocalOutlierFactor (LOF)
+\end{center}
+
 \end{frame}
 
 
@@ -145,16 +150,18 @@ PR on \textbf{API consistency} $\vcenter{\hbox{\includegraphics[width=1.7cm]{img
 \end{frame}
 
 
-\begin{frame}\frametitle{Scikit-learn API - Novelty detection}
+\begin{frame}\frametitle{Scikit-learn API}
 
-\mintinline{python}{EllipticEnvelope}, \mintinline{python}{OneClassSVM} and \mintinline{python}{IsolationForest}
+EllipticEnvelope, OneClassSVM and IsolationForest
 
+\onslide<1->{
 \begin{itemize}
   \item instantiate your estimator, e.g.~\mintinline{python}{clf = OneClassSVM()}
   \item \mintinline{python}{clf.fit(X_train)}
   \item \mintinline{python}{clf.score_samples(X_test)}: raw score $s$
   \item \mintinline{python}{clf.decision_function(X_test)}: thresholded score
   \begin{equation*}
+  \mintinline{python}{clf.score_samples(X_test) - clf.offset_} \quad
   \begin{cases}
     \geq 0 \quad \text{for inliers} \\
     < 0 \quad \text{for outliers}
@@ -168,13 +175,20 @@ PR on \textbf{API consistency} $\vcenter{\hbox{\includegraphics[width=1.7cm]{img
   \end{cases}
   \end{equation*}
 \end{itemize}
+}
+
+\visible<2>{
+\begin{center}
+\alert{Not valid for LOF}
+\end{center}
+}
 
 \end{frame}
 
 
 \begin{frame}\frametitle{Scikit-learn API - Outlier detection}
 
-\mintinline{python}{LocalOutlierFactor}, based on \mintinline{python}{k}-NN distances
+LOF, based on \mintinline{python}{k}-NN distances
 
 \begin{itemize}
   \item \mintinline{python}{predict} on \mintinline{python}{x} $\in$ \mintinline{python}{X_train}: take \mintinline{python}{k} nearest neighbors of \mintinline{python}{x} in $\mintinline{python}{X_train} \setminus \mintinline{python}{x}$
@@ -222,10 +236,11 @@ Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or 
 
 \visible<2->{
 \begin{center}
-\textbf{Cannot (officialy) use \mintinline{python}{LocalOutlierFactor} for novelty detection}
+\textbf{Cannot (officialy) use LOF for novelty detection}
 \end{center}
+\vspace{0.4cm}
 \begin{center}
-\includegraphics[width=2cm]{img/shocking.jpg}
+\includegraphics[width=1.8cm]{img/shocking.jpg}
 \end{center}
 }
 
@@ -235,7 +250,7 @@ Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or 
 \begin{frame}\frametitle{Scikit-learn API}
 
 \onslide<1->{
-\mintinline{python}{contamination} parameter in $(0, 1)$ (\mintinline{python}{nu} for \mintinline{python}{OneClassSVM})
+\mintinline{python}{contamination} parameter in $(0, 1)$ (\mintinline{python}{nu} for OneClassSVM)
 
 \begin{itemize}
   \item for outlier detection: proportion of outliers in the data set
@@ -263,6 +278,21 @@ Used to compute the offset $q$ on the training set
   \end{equation*}
 \end{itemize}
 }
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Common tests}
+
+$\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{common tests for outlier detection estimators}
+
+\begin{itemize}
+  \item Create an \mintinline{python}{OutlierDetectionMixin} for all outlier and novelty detection estimators: defines a \mintinline{python}{fit_predict}
+  \item For all estimators test \mintinline{python}{fit_predict}: type, shape, proportion of outliers $=$ \mintinline{python}{contamination}, \mintinline{python}{fit.predict = fit_predict}, \mintinline{python}{ValueError} if \mintinline{python}{contamination} $\notin (0,1)$
+  \item For novelty detection estimators: type, shape, \mintinline{python}{contamination}, 
+\end{itemize}
+    
+
 
 \end{frame}
 
