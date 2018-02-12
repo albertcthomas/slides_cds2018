@@ -288,11 +288,59 @@ $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textb
 
 \begin{itemize}
   \item Create an \mintinline{python}{OutlierDetectionMixin} for all outlier and novelty detection estimators: defines a \mintinline{python}{fit_predict}
-  \item For all estimators test \mintinline{python}{fit_predict}: type, shape, proportion of outliers $=$ \mintinline{python}{contamination}, \mintinline{python}{fit.predict = fit_predict}, \mintinline{python}{ValueError} if \mintinline{python}{contamination} $\notin (0,1)$
-  \item For novelty detection estimators: type, shape, \mintinline{python}{contamination}, 
+  \item For all estimators test \mintinline{python}{fit_predict}: type, shape, \mintinline{python}{contamination}, \mintinline{python}{fit.predict = fit_predict}, labels $\in [-1, 1]$
+  \item For novelty detection estimators: type, shape, \mintinline{python}{contamination}, \mintinline{python}{score_samples}, \mintinline{python}{decision_function}, \mintinline{python}{offset_}
 \end{itemize}
-    
+  
 
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{SGD OneClassSVM}
+
+$\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{OneClassSVM using SGD}
+
+\begin{itemize}
+  \item Solves a linear version of the OneClassSVM: to pipeline with a kernel approximation
+\end{itemize}
+
+\begin{minted}{python}
+
+  from sklearn.kernel_approximation import Nystroem
+  from sklearn.linear_model import SGDOneClassSVM
+
+  nystroem = Nystroem(gamma=gamma)
+  online_ocsvm = SGDOneClassSVM(nu=nu)
+  pipe_online = make_pipeline(nystroem, online_ocsvm)
+
+  pipe_online.fit(X_train)
+
+\end{minted}
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{SGD OneClassSVM}
+
+$\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{OneClassSVM using SGD}
+
+\only<1>{
+\begin{center}
+\includegraphics[width=11.5cm]{img/example_sgdocsvm.png}
+\end{center}
+}
+
+\only<2>{
+\begin{center}
+\includegraphics[width=11.5cm]{img/time_sgdocsvm.png}
+\end{center}
+}
+
+\only<3>{
+\begin{center}
+\includegraphics[width=11.5cm]{img/auc_sgdocsvm.png}
+\end{center}
+}
 
 \end{frame}
 
