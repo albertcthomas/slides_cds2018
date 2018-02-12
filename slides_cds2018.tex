@@ -320,7 +320,7 @@ $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textb
 \end{frame}
 
 
-\begin{frame}[fragile]\frametitle{SGD OneClassSVM}
+\begin{frame}\frametitle{SGD OneClassSVM}
 
 $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{OneClassSVM using SGD}
 
@@ -343,6 +343,38 @@ $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textb
 }
 
 \end{frame}
+
+
+\begin{frame}\frametitle{Future work}
+
+Novelty detection for LOF: add \mintinline{python}{novelty} parameter in \mintinline{python}{__init__}
+\begin{itemize}
+  \item \mintinline{python}{novelty=False} (default): \mintinline{python}{predict}, \mintinline{python}{decision_function} and \mintinline{python}{scores_samples} raises \mintinline{python}{NotImplementedError}
+  \item \mintinline{python}{novelty=True}: \mintinline{python}{fit_predict} raises \mintinline{python}{NotImplementedError}
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Future work}
+
+OutlierDetectionMixin
+\begin{itemize}
+  \item add \mintinline{python}{predict}? \mintinline{python}{decision_function}?
+\end{itemize}
+
+Anomaly detection benchmarks
+\begin{itemize}
+  \item one script per context (novelty vs outlier detection)
+  \item convert fast benchmarks into examples
+\end{itemize}
+
+Documentation
+
+
+
+\end{frame}
+
 
 
 \end{document}
