@@ -77,24 +77,54 @@
 \begin{frame}
 \frametitle{Anomaly detection}
 
+\only<1-3>{
 \begin{itemize}
-\item \textbf{Imbalanced classification}: anomalies and normal data available, usually highly imbalanced data set
-
-\item \textbf{Novely detection}: normal data available, fit on normal data, then predict on unlabelled data
-
-\item \textbf{Outlier detection}: unlabelled data only, fit \textbf{and} predict on unlabelled data. Anomalies are rare events, located in the low density regions.
+\item \textbf{Imbalanced classification}: anomalies and normal data available
 \end{itemize}
+}
 
+\visible<2->{
+\begin{itemize}
+\item \textbf{Novelty detection}: only normal data available
 \begin{center}
-\includegraphics[width=5cm]{dls3.pdf}
+fit on normal data, predict on unlabeled data
+\end{center}
+\end{itemize}
+}
+
+\visible<3->{
+\begin{itemize}
+\item \textbf{Outlier detection}: unlabeled data only,
+\begin{center}
+fit \textbf{and} predict on unlabeled data
 \end{center}
 
-\begin{center}
-Find the \textbf{high density regions}
-\end{center}
+Outliers are rare events, located in the low density regions.
+\end{itemize}
+}
 
 \end{frame}
 
+
+\begin{frame}\frametitle{Anomaly detection}
+    
+\begin{itemize}
+\item \textbf{Novelty detection}: only normal data available
+\begin{center}
+fit on normal data, predict on unlabeled data
+\end{center}
+\item \textbf{Outlier detection}: unlabeled data only,
+\begin{center}
+fit \textbf{and} predict on unlabeled data
+\end{center}
+
+Outliers are rare events, located in the low density regions.
+\end{itemize}
+\begin{center}
+\includegraphics[width=7cm]{dls3.pdf}
+\end{center}
+
+\end{frame}
 
 
 \begin{frame}
@@ -127,10 +157,19 @@ IsolationForest (iForest) and LocalOutlierFactor (LOF)
 \end{frame}
 
 
-\begin{frame}\frametitle{Algorithms}
+\begin{frame}[plain]
     
 \begin{center}
-\includegraphics[width=6.8cm]{img/anomaly_comparison.pdf}
+\includegraphics[width=8cm]{img/anomaly_comparison.pdf}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}[plain]
+    
+\begin{center}
+\includegraphics[width=8cm]{img/anomaly_comparison.pdf}
 \end{center}
 
 \end{frame}
@@ -143,7 +182,8 @@ PR on \textbf{API consistency} $\vcenter{\hbox{\includegraphics[width=1.7cm]{img
 \end{center}
 
 \begin{itemize}
-  \item \mintinline{python}{decision_function}
+  \item same \mintinline{python}{decision_function} for all estimators
+  \vspace{0.5cm}
   \item new \mintinline{python}{score_samples} method
 \end{itemize}
 
@@ -188,14 +228,20 @@ EllipticEnvelope, OneClassSVM and IsolationForest
 
 \begin{frame}\frametitle{Scikit-learn API - Outlier detection}
 
-LOF, based on \mintinline{python}{k}-NN distances
+LOF is based on $k$-NN distances
+
+\vspace{0.5cm}
 
 \begin{itemize}
-  \item \mintinline{python}{predict} on \mintinline{python}{x} $\in$ \mintinline{python}{X_train}: take \mintinline{python}{k} nearest neighbors of \mintinline{python}{x} in $\mintinline{python}{X_train} \setminus \mintinline{python}{x}$
-  \item \mintinline{python}{predict} on \mintinline{python}{x} $\notin$ \mintinline{python}{X_train}: take \mintinline{python}{k} nearest neighbors of \mintinline{python}{x} in \mintinline{python}{X_train}
+  \item predict on $x \in X_{train}$: take the $k$ nearest neighbors of $x$ in $X_{train} \setminus \{x\}$
+  \vspace{0.5cm}
+  \item predict on $x \notin X_{train}$: take the $k$ nearest neighbors of $x$ in $X_{train}$
 \end{itemize}
+
+\vspace{0.5cm}
+
 \begin{center}
-Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or not...
+Hard to check whether $x \in X_{train}$ or not...
 \end{center}
 
 \end{frame}
@@ -205,13 +251,16 @@ Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or 
 
 \onslide<1->{
 1st solution
+\vspace{0.5cm}
 \begin{itemize}
   \item \mintinline{python}{fit_predict(X_train)} to predict on \mintinline{python}{X_train}
+  \vspace{0.5cm}
   \item \mintinline{python}{predict(X_test)} to predict on \mintinline{python}{X_test}
 \end{itemize}
 }
 
 \visible<2>{
+\vspace{0.5cm}
 \begin{center}
 \alert{\mintinline{python}{fit(X).predict(X) != fit_predict(X)}}
 \end{center}
@@ -226,19 +275,22 @@ Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or 
 \begin{frame}\frametitle{Scikit-learn API - Outlier detection}
 
 \onslide<1->{
-2nd solution
+2nd solution and current one
+\vspace{0.3cm}
 \begin{itemize}
-  \item only \mintinline{python}{fit_predict(X)} is public
+  \item only \mintinline{python}{fit_predict} is public
+  \vspace{0.3cm}
   \item \mintinline{python}{_score_samples}, \mintinline{python}{_decision_function} and \mintinline{python}{_predict} are private
 \end{itemize}
 % LOF's original paper is only about outlier detection
 }
 
 \visible<2->{
+\vspace{0.3cm}
 \begin{center}
-\textbf{Cannot (officialy) use LOF for novelty detection}
+\textbf{Novelty detection is not (officially) supported for LOF}
 \end{center}
-\vspace{0.4cm}
+\vspace{0.3cm}
 \begin{center}
 \includegraphics[width=1.8cm]{img/shocking.jpg}
 \end{center}
@@ -249,35 +301,41 @@ Hard to check that $\mintinline{python}{x} \in \mintinline{python}{X_train}$ or 
 
 \begin{frame}\frametitle{Scikit-learn API}
 
-\onslide<1->{
-\mintinline{python}{contamination} parameter in $(0, 1)$ (\mintinline{python}{nu} for OneClassSVM)
+\mintinline{python}{contamination} parameter in $(0, 1)$ / \mintinline{python}{nu} for OneClassSVM
+
+\vspace{0.3cm}
 
 \begin{itemize}
   \item for outlier detection: proportion of outliers in the data set
+  \vspace{0.3cm}
   \item for novelty detection: type-I error (false positive rate)
 \end{itemize}
-}
 
-\visible<2->{
+\vspace{0.5cm}
+
 Used to compute the offset $q$ on the training set
 \begin{equation*}
 \{s(x) < q \} = \{\text{\mintinline{python}{clf.score_samples(x) < clf.offset_}}\}
 \end{equation*}
-}
-\visible<3->{
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Scikit-learn API}
+
 \mintinline{python}{contamination} can be set to \mintinline{python}{'auto'} for iForest and LOF
+\vspace{0.4cm}
 \begin{itemize}
   \item iForest: score of inliers close to 0 and score of outliers close to -1
   \begin{equation*}
   \mintinline{python}{clf.offset_ = -0.5}
   \end{equation*}
-  
+  \vspace{0.2cm}
   \item LOF: score of inliers $\approx -1$
   \begin{equation*}
   \mintinline{python}{clf.offset_ = -1.5}
   \end{equation*}
 \end{itemize}
-}
 
 \end{frame}
 
@@ -286,23 +344,33 @@ Used to compute the offset $q$ on the training set
 
 $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{common tests for outlier detection estimators}
 
+\vspace{0.5cm}
+
 \begin{itemize}
-  \item Create an \mintinline{python}{OutlierDetectionMixin} for all outlier and novelty detection estimators: defines a \mintinline{python}{fit_predict}
-  \item For all estimators test \mintinline{python}{fit_predict}: type, shape, \mintinline{python}{contamination}, \mintinline{python}{fit.predict = fit_predict}, labels $\in [-1, 1]$
-  \item For novelty detection estimators: type, shape, \mintinline{python}{contamination}, \mintinline{python}{score_samples}, \mintinline{python}{decision_function}, \mintinline{python}{offset_}
+  \item Create an \mintinline{python}{OutlierDetectionMixin}
+  \begin{center}
+  defines a \mintinline{python}{fit_predict} for all outlier and novelty detection estimators
+  \end{center}
+  \vspace{0.4cm}
+  \item For all estimators test \mintinline{python}{fit_predict}
+  \vspace{0.5cm}
+  \item For novelty detection estimators test \mintinline{python}{score_samples}, \mintinline{python}{decision_function}, \mintinline{python}{offset_}
 \end{itemize}
   
 
 \end{frame}
 
 
-\begin{frame}[fragile]\frametitle{SGD OneClassSVM}
+\begin{frame}[fragile]\frametitle{OneClassSVM with SGD}
 
 $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{OneClassSVM using SGD}
 
 \begin{itemize}
-  \item Solves a linear version of the OneClassSVM: to pipeline with a kernel approximation
+  \item Solves a linear version of the OneClassSVM
+  \item Pipeline with a kernel approximation
 \end{itemize}
+
+\vspace{0.5cm}
 
 \begin{minted}{python}
 
@@ -320,40 +388,85 @@ $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textb
 \end{frame}
 
 
-\begin{frame}\frametitle{SGD OneClassSVM}
+\begin{frame}[plain]
 
-$\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{OneClassSVM using SGD}
-
+% $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textbf{OneClassSVM using SGD}
+\begin{changemargin}{-0.5cm}{+1.cm}
 \only<1>{
 \begin{center}
-\includegraphics[width=11.5cm]{img/example_sgdocsvm.png}
+\includegraphics[width=12cm]{img/example_sgdocsvm.png}
 \end{center}
 }
 
 \only<2>{
 \begin{center}
-\includegraphics[width=11.5cm]{img/time_sgdocsvm.png}
+\includegraphics[width=12cm]{img/time_sgdocsvm.png}
 \end{center}
 }
 
 \only<3>{
 \begin{center}
-\includegraphics[width=11.5cm]{img/auc_sgdocsvm.png}
+\includegraphics[width=12cm]{img/auc_sgdocsvm.png}
+\end{center}
+}
+\end{changemargin}
+
+\end{frame}
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{frame}\frametitle{Future work}
+
+Novelty detection for LOF
+\begin{center}
+add \mintinline{python}{novelty} parameter in \mintinline{python}{__init__}
+\end{center}
+
+
+\begin{itemize}
+  \item \mintinline{python}{novelty=False} (default)
+\end{itemize}
+{\footnotesize
+  \begin{center}
+  \begin{tabular}{ | c | c | }
+    \hline
+    \mintinline{python}{fit_predict} & \mintinline{python}{predict}/\mintinline{python}{decision_function}/\mintinline{python}{scores_samples}\\ \hline
+    OK & \mintinline{python}{NotImplementedError} \\ \hline 
+  \end{tabular}
+\end{center}
+}
+
+
+\begin{itemize}
+  \item \mintinline{python}{novelty=True}
+\end{itemize}
+{\footnotesize
+  \begin{center}
+  \begin{tabular}{ | c | c | }
+    \hline
+    \mintinline{python}{fit_predict} & \mintinline{python}{predict}/\mintinline{python}{decision_function}/\mintinline{python}{scores_samples}\\ \hline
+    \mintinline{python}{NotImplementedError} & OK \\ \hline 
+  \end{tabular}
 \end{center}
 }
 
 \end{frame}
 
 
-\begin{frame}\frametitle{Future work}
 
-Novelty detection for LOF: add \mintinline{python}{novelty} parameter in \mintinline{python}{__init__}
-\begin{itemize}
-  \item \mintinline{python}{novelty=False} (default): \mintinline{python}{predict}, \mintinline{python}{decision_function} and \mintinline{python}{scores_samples} raises \mintinline{python}{NotImplementedError}
-  \item \mintinline{python}{novelty=True}: \mintinline{python}{fit_predict} raises \mintinline{python}{NotImplementedError}
-\end{itemize}
 
-\end{frame}
+% \begin{frame}\frametitle{Future work}
+
+% Novelty detection for LOF: add \mintinline{python}{novelty} parameter in \mintinline{python}{__init__}
+% \begin{itemize}
+%   \item \mintinline{python}{novelty=False} (default): \mintinline{python}{predict}, \mintinline{python}{decision_function} and \mintinline{python}{scores_samples} raises \mintinline{python}{NotImplementedError}
+%   \item \mintinline{python}{novelty=True}: \mintinline{python}{fit_predict} raises \mintinline{python}{NotImplementedError}
+% \end{itemize}
+
+% \end{frame}
+
+
+
 
 
 \begin{frame}\frametitle{Future work}
@@ -363,18 +476,24 @@ OutlierDetectionMixin
   \item add \mintinline{python}{predict}? \mintinline{python}{decision_function}?
 \end{itemize}
 
+\vspace{0.2cm}
+
 Anomaly detection benchmarks
 \begin{itemize}
   \item one script per context (novelty vs outlier detection)
   \item convert fast benchmarks into examples
 \end{itemize}
 
-New estimators
+\vspace{0.2cm}
+
+$\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PRs for new estimators
 \begin{itemize}
   \item SGDOneClassSVM
   \item Local Outlier Probabilities
-  \item SVDD?
+  \item SVDD
 \end{itemize}
+
+\vspace{0.2cm}
 
 Documentation
 
@@ -383,9 +502,10 @@ Documentation
 
 \begin{frame}\frametitle{Thanks to}
 \begin{center}
-@agramfort,  @jnothman, @ngoix, @amueller, @lesteve, @ogrisel, @TomDLT
+@agramfort,  @jnothman, @ngoix,\\
+@amueller, @lesteve, @ogrisel, @TomDLT
 \end{center}
-
+\vspace{0.5cm}
 \begin{center}
 the scikit-learn community
 \end{center}
