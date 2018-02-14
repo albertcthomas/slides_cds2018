@@ -157,19 +157,28 @@ IsolationForest (iForest) and LocalOutlierFactor (LOF)
 \end{frame}
 
 
-\begin{frame}[plain]
+\begin{frame}[plain]\frametitle{Outlier Detection}
     
 \begin{center}
-\includegraphics[width=8cm]{img/anomaly_comparison.pdf}
+\includegraphics[width=7cm]{img/anomaly_comparison.pdf}
 \end{center}
 
 \end{frame}
 
 
-\begin{frame}[plain]
+\begin{frame}[plain]\frametitle{Local Outlier Factor}
+
+\begin{center}
+\includegraphics[width=7cm]{img/locality_lof.pdf}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}[plain]\frametitle{Novetly detection}
     
 \begin{center}
-\includegraphics[width=8cm]{img/novelty_comparison.pdf}
+\includegraphics[width=7cm]{img/novelty_comparison.pdf}
 \end{center}
 
 \end{frame}
@@ -356,7 +365,7 @@ $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PR on \textb
 \vspace{0.5cm}
 
 \begin{itemize}
-  \item Create an \mintinline{python}{OutlierDetectionMixin}
+  \item Create an \mintinline{python}{OutlierMixin}
   \begin{center}
   defines a \mintinline{python}{fit_predict} for all outlier and novelty detection estimators
   \end{center}
@@ -480,7 +489,7 @@ add \mintinline{python}{novelty} parameter in \mintinline{python}{__init__}
 
 \begin{frame}\frametitle{Future work}
 
-OutlierDetectionMixin
+OutlierMixin
 \begin{itemize}
   \item add \mintinline{python}{predict}? \mintinline{python}{decision_function}?
 \end{itemize}
@@ -495,11 +504,12 @@ Anomaly detection benchmarks
 
 \vspace{0.2cm}
 
-$\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$ PRs for new estimators
+New estimators
 \begin{itemize}
-  \item SGDOneClassSVM
-  \item Local Outlier Probabilities
-  \item SVDD
+  \item SGDOneClassSVM $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$
+  \item Local Outlier Probabilities $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$
+  \item SVDD $\vcenter{\hbox{\includegraphics[width=1.4cm]{img/open_logo.pdf}}}$
+  \item Online univariate anomaly detection
 \end{itemize}
 
 \vspace{0.2cm}
@@ -522,14 +532,6 @@ the scikit-learn community
 
 \end{frame}
 
-
-\begin{frame}[plain,noframenumbering]
-
-\begin{center}
-\includegraphics[width=7cm]{img/locality_lof.pdf}
-\end{center}
-
-\end{frame}
 
 
 \end{document}
